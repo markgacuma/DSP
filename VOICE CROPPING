@@ -1,0 +1,109 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPCRoT3rxeMsX2f9uuhOH8k",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/markgacuma/DSP/blob/main/VOICE%20CROPPING\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "! pip install pydub\n",
+        "! pip install numpy"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "v8-GtjPtIREh",
+        "outputId": "2399cbdf-5dcf-4837-99b9-c86e08f6b148"
+      },
+      "execution_count": 10,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Requirement already satisfied: pydub in /usr/local/lib/python3.10/dist-packages (0.25.1)\n",
+            "Requirement already satisfied: numpy in /usr/local/lib/python3.10/dist-packages (1.26.4)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from pydub import AudioSegment\n",
+        "import numpy as np\n",
+        "\n",
+        "def audio_to_array(file_path):\n",
+        "    # Load audio file (mp3 or wav)\n",
+        "    audio = AudioSegment.from_file(file_path)\n",
+        "\n",
+        "    # Get raw data\n",
+        "    raw_data = audio.raw_data\n",
+        "\n",
+        "    # Convert raw_data to a numpy array\n",
+        "    audio_array = np.frombuffer(raw_data, dtype=np.int16)\n",
+        "\n",
+        "    # Reshape to separate channels if stereo (2 channels)\n",
+        "    channels = audio.channels\n",
+        "    sample_rate = audio.frame_rate\n",
+        "    audio_array = np.reshape(audio_array, (-1, channels))\n",
+        "\n",
+        "    return audio_array, sample_rate\n",
+        "\n",
+        "# Example usage\n",
+        "file_path = 'thevoiceECE1.wav'  # Pass the file path as a string\n",
+        "audio_array, sample_rate = audio_to_array(file_path)  # Call the function with the file path\n",
+        "print(audio_array)\n",
+        "print(f\"Sample Rate: {sample_rate}\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "hN3KhjTlIpO7",
+        "outputId": "5a9d3348-9366-4bdd-a3d2-cda42dd35f0d"
+      },
+      "execution_count": 12,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[[   1    2]\n",
+            " [   5    5]\n",
+            " [   8    8]\n",
+            " ...\n",
+            " [-379 -380]\n",
+            " [-400 -401]\n",
+            " [-418 -418]]\n",
+            "Sample Rate: 48000\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
